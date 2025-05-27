@@ -5,9 +5,10 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
-import com.google.api.services.sheets.v4.model.ValueRange
+import com.google.api.services.sheets.v4.model.*
 import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.GoogleCredentials
+import com.microserviceutils.googlesheetadapter.model.ColorDto
 import com.microserviceutils.googlesheetadapter.model.DataDto
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -72,6 +73,47 @@ class SpreadsheetService {
             result[title] = getListValues(title)
         }
         return result
+    }
+
+
+    fun styleRow(sheetId: Int, rowIndex: Int, columnIndex: Int, textColor: ColorDto, cellColor: ColorDto) {
+        val request = Request().apply {
+            repeatCell = RepeatCellRequest().apply {
+                range = GridRange().apply {
+                    this.sheetId = sheetId
+                    startRowIndex = rowIndex
+                    endRowIndex = rowIndex + 1
+                    startColumnIndex = columnIndex
+                    endColumnIndex = columnIndex + 1
+                }
+                cell = CellData().apply {
+                    userEnteredFormat = CellFormat().apply {
+                        backgroundColor = Color().apply {
+                            red = cellColor.red
+                            green = cellColor.green
+                            blue = cellColor.blue
+                        }
+                        textFormat = TextFormat().apply {
+                            bold = true
+                            foregroundColor = Color().apply {
+                                red = textColor.red
+                                green = textColor.green
+                                blue = textColor.blue
+                            }
+                        }
+                    }
+                    fields = "*"
+                }
+            }
+        }
+        val batchUpdateRequest = BatchUpdateSpreadsheetRequest().apply {
+            requests = listOf(request)
+        }
+        try {
+            service.spreadsheets().batchUpdate(SPREADSHEET_ID, batchUpdateRequest).execute()
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        }
     }
 
 
