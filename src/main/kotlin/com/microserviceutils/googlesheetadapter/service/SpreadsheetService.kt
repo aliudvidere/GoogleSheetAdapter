@@ -10,11 +10,13 @@ import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.GoogleCredentials
 import com.microserviceutils.googlesheetadapter.model.DataDto
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Service
 import java.io.IOException
 import kotlin.collections.setOf
 
 @Service
+@ConditionalOnProperty(prefix = "google-doc", name = ["service-account-key-base64", "sheet", "application_name",])
 class SpreadsheetService {
 
     @Value("\${google-doc.sheet}")

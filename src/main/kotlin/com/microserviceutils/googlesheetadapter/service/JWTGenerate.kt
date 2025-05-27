@@ -3,12 +3,10 @@ package com.microserviceutils.googlesheetadapter.service
 import com.google.auth.oauth2.ServiceAccountCredentials
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
 import java.io.ByteArrayInputStream
 import java.util.*
 
 
-@Component
 class JWTGenerate(
     @Value("\${google-doc.service-account-key-base64}")
     private val base64Key: String
