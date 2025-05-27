@@ -4,8 +4,10 @@ import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.ALL_
 import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.API
 import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.SHEET
 import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.SHEET_NAMES
+import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.STYLE_BY_RANGE
 import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.WRITE_BY_RANGE
 import com.microserviceutils.googlesheetadapter.model.DataDto
+import com.microserviceutils.googlesheetadapter.model.StyleDto
 import com.microserviceutils.googlesheetadapter.service.SpreadsheetService
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.web.bind.annotation.GetMapping
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 class SpreadsheetController(val spreadsheetService: SpreadsheetService) {
 
     @PostMapping(value = [WRITE_BY_RANGE], produces = [APPLICATION_JSON_VALUE])
-    fun update(@RequestBody dataDto: DataDto) {
+    fun writeByRange(@RequestBody dataDto: DataDto) {
         spreadsheetService.updateData(dataDto)
     }
 
@@ -32,4 +34,10 @@ class SpreadsheetController(val spreadsheetService: SpreadsheetService) {
     fun getAllSheetsValues(): Map<String, List<List<Any>>> {
         return spreadsheetService.getAllSheetsValues()
     }
+
+    @PostMapping(value = [STYLE_BY_RANGE], produces = [APPLICATION_JSON_VALUE])
+    fun styleByRange(@RequestBody styleDto: StyleDto) {
+        spreadsheetService.styleRow(styleDto)
+    }
+
 }

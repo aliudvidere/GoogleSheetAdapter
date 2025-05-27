@@ -6,4 +6,5 @@ object EndpointConstants {
     const val WRITE_BY_RANGE = "/write-by-range"
     const val SHEET_NAMES = "/sheet-names"
     const val ALL_SHEETS_VALUES = "/all-sheets-values"
+    const val STYLE_BY_RANGE = "/style-by-range"
 }

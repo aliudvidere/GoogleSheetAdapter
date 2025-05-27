@@ -8,8 +8,11 @@ import com.google.api.services.sheets.v4.SheetsScopes
 import com.google.api.services.sheets.v4.model.*
 import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.GoogleCredentials
-import com.microserviceutils.googlesheetadapter.model.ColorDto
+import com.microserviceutils.googlesheetadapter.constants.SpreadSheetConstants.FAILED_TO_LOAD_CREDENTIALS
+import com.microserviceutils.googlesheetadapter.constants.SpreadSheetConstants.RAW
+import com.microserviceutils.googlesheetadapter.constants.SpreadSheetConstants.USER_ENTERED_FORMAT
 import com.microserviceutils.googlesheetadapter.model.DataDto
+import com.microserviceutils.googlesheetadapter.model.StyleDto
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Service
@@ -32,7 +35,7 @@ class SpreadsheetService {
             val credentials: GoogleCredentials = try {
                 JWTGenerate.credentials.createScoped(setOf(SheetsScopes.SPREADSHEETS))
             } catch (e: IOException) {
-                throw RuntimeException("Failed to load credentials", e)
+                throw RuntimeException(FAILED_TO_LOAD_CREDENTIALS, e)
             }
 
             Sheets.Builder(
@@ -76,33 +79,33 @@ class SpreadsheetService {
     }
 
 
-    fun styleRow(sheetId: Int, rowIndex: Int, columnIndex: Int, textColor: ColorDto, cellColor: ColorDto) {
+    fun styleRow(styleDto: StyleDto) {
         val request = Request().apply {
             repeatCell = RepeatCellRequest().apply {
                 range = GridRange().apply {
-                    this.sheetId = sheetId
-                    startRowIndex = rowIndex
-                    endRowIndex = rowIndex + 1
-                    startColumnIndex = columnIndex
-                    endColumnIndex = columnIndex + 1
+                    this.sheetId = styleDto.sheetId
+                    startRowIndex = styleDto.range[0][0]
+                    endRowIndex = styleDto.range[0][1]
+                    startColumnIndex = styleDto.range[1][0]
+                    endColumnIndex = styleDto.range[1][1]
                 }
                 cell = CellData().apply {
                     userEnteredFormat = CellFormat().apply {
                         backgroundColor = Color().apply {
-                            red = cellColor.red
-                            green = cellColor.green
-                            blue = cellColor.blue
+                            red = styleDto.cellColor.red
+                            green = styleDto.cellColor.green
+                            blue = styleDto.cellColor.blue
                         }
                         textFormat = TextFormat().apply {
                             bold = true
                             foregroundColor = Color().apply {
-                                red = textColor.red
-                                green = textColor.green
-                                blue = textColor.blue
+                                red = styleDto.textColor.red
+                                green = styleDto.textColor.green
+                                blue = styleDto.textColor.blue
                             }
                         }
                     }
-                    fields = "*"
+                    fields = USER_ENTERED_FORMAT
                 }
             }
         }
@@ -121,7 +124,7 @@ class SpreadsheetService {
     private fun updateDataInTable(valueRange: ValueRange) {
         try {
             service.spreadsheets().values().update(SPREADSHEET_ID, valueRange.range, valueRange)
-                .setValueInputOption("RAW")
+                .setValueInputOption(RAW)
                 .execute()
         } catch (e: IOException) {
             throw java.lang.RuntimeException(e)
