@@ -4,7 +4,7 @@ import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.ALL_
 import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.API
 import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.SHEET
 import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.SHEET_NAMES
-import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.UPDATE
+import com.microserviceutils.googlesheetadapter.constants.EndpointConstants.WRITE_BY_RANGE
 import com.microserviceutils.googlesheetadapter.model.DataDto
 import com.microserviceutils.googlesheetadapter.service.SpreadsheetService
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping(value = ["${API}${SHEET}"])
 class SpreadsheetController(val spreadsheetService: SpreadsheetService) {
 
-    @PostMapping(value = [UPDATE], produces = [APPLICATION_JSON_VALUE])
+    @PostMapping(value = [WRITE_BY_RANGE], produces = [APPLICATION_JSON_VALUE])
     fun update(@RequestBody dataDto: DataDto) {
         spreadsheetService.updateData(dataDto)
     }
