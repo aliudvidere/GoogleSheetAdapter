@@ -1,7 +1,6 @@
-package com.microserviceutils.googlesheetadapter;
+package com.microserviceutils.googlesheetadapter.model;
 
-data class UserDto(
-        val id: Long,
-        val name: String,
-        val email: String
+data class DataDto(
+        val data: List<List<String>>,
+        val range: String,
 )

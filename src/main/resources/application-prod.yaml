@@ -1,3 +1,4 @@
 google-doc:
   sheet: ${SHEET_ID}
   application_name: ${APPLICATION_NAME}
+  service-account-key-base64: ${SERVICE_KEY_BASE64}

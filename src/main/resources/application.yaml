@@ -1,1 +1,7 @@
-spring.application.name=GoogleSheetAdapter
+spring:
+  application:
+    name: GoogleSheetAdapter
+server:
+  port: 1616
+  servlet:
+    context-path: /google-sheet
